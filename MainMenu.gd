@@ -1,32 +1,24 @@
 extends Control
 
+@onready var play_button = $VBoxContainer/PlayButton
+@onready var options_button = $VBoxContainer/OptionsButton
+@onready var quit_button = $VBoxContainer/QuitButton
+@onready var options_popup = $OptionsPopup  # لو مش موجود احذف السطر ده
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	$LoadMenu.LoadingLevel.connect(on_load_level)
-	$LoadMenu.HideInterface.connect(on_hide_interface)
-	pass # Replace with function body.
+    play_button.pressed.connect(_on_play_pressed)
+    options_button.pressed.connect(_on_options_pressed)
+    quit_button.pressed.connect(_on_quit_pressed)
 
+func _on_play_pressed():
+    # غيّر المسار لاسم مشهد اللعبة الحقيقي عندك
+    var err = get_tree().change_scene_to_file("res://scenes/Game.tscn")
+    if err != OK:
+        push_error("Failed to load Game.tscn: %s" % str(err))
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func _on_options_pressed():
+    if options_popup:
+        options_popup.popup_centered()
 
-
-func _on_start_game_button_down():
-	
-	GameManager.LoadLevel("res://Scenes/Level One WakeUp.tscn" , 0)
-	queue_free()
-	
-	pass # Replace with function body.
-
-
-func _on_load_game_button_down():
-	$LoadMenu.show() 
-	pass # Replace with function body.
-
-func on_load_level():
-	queue_free()
-	
-func on_hide_interface():
-	$LoadMenu.hide()
+func _on_quit_pressed():
+    get_tree().quit()
